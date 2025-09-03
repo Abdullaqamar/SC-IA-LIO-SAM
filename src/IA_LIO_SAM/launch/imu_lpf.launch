@@ -1,0 +1,9 @@
+<launch>
+  <!-- IMU LPF node -->
+  <node pkg="lio_sam" type="imu_lpf.py" name="imu_lpf" output="screen">
+    <param name="in" value="/ouster/imu"/>
+    <param name="out" value="/ouster/imu_lpf"/>
+    <param name="rate" value="100.0"/>
+    <param name="cutoff" value="15.0"/>
+  </node>
+</launch>

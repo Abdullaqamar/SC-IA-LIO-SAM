@@ -1,0 +1,172 @@
+lio_sam:
+
+  # Topics - Modified for your bag file
+  pointCloudTopic: "/ouster/points"               # Point cloud data from your bag
+  imuTopic: "/ouster/imu"                         # IMU data from your bag
+  odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
+  gpsTopic: "odometry/gpsz"                   # GPS odometry topic (not used in your case)
+
+  # Frames
+  lidarFrame: "base_link"
+  baselinkFrame: "base_link"
+  odometryFrame: "odom"
+  mapFrame: "map"
+
+  # GPS Settings - Disabled since you don't have GPS
+  useImuHeadingInitialization: true         #false CHANGEEEEEEEEEEEEEEEEEEEEEEED           # Set to false since no GPS data
+  useGpsElevation: false                      # Set to false since no GPS data
+  gpsCovThreshold: 2.0                        # m^2, threshold for using GPS data
+  poseCovThreshold: 25.0                      # m^2, threshold for using GPS data
+  
+  # Export settings
+  savePCD: true                              # Save dense map
+  savePCDDirectory: "/SC_IA_LIO_SAM/maps/"  # Save maps in your workspace 
+
+  # Sensor Settings - Ouster specific
+  sensor: ouster                            # lidar sensor type
+  N_SCAN: 128                               # number of lidar channel (Ouster OS1-128)
+  Horizon_SCAN: 1024                          # lidar horizontal resolution (Ouster: 1024)
+  # Additional density parameters
+  downsampleRate: 1                             # Keep original resolution (no downsampling)
+  lidarMinRange: 0.5                            # Reduced from 1.0 to capture closer points
+  lidarMaxRange: 120.0                          # Increased from 100.0 for better coverage
+
+  # Feature extraction density parameters
+  maxCornerFeatures: 50                     # Increased from default 20 for more corner features
+  maxSurfaceFeatures: 200                     # Increased for more surface features
+  featureExtractionRadius: 0.1                 # Smaller radius for denser feature extraction
+
+  # IMU Settings - Calibrated Xsens IMU noise parameters
+  # Gyroscope noise parameters (rad/s)
+  imuGyrNoise: 1.0399359067749267e-03      # Average gyroscope noise
+  imuGyrBiasN: 2.4898378963425271e-05      # Average gyroscope bias instability
+  
+  # Accelerometer noise parameters (m/s^2)
+  imuAccNoise: 1.7834968261335432e-02      # Average accelerometer noise
+  imuAccBiasN: 8.4451195245811384e-04      # Average accelerometer bias instability
+  
+  # Individual axis values for reference:
+  # Gyr X: noise=1.3489509462589876e-03, bias=2.6554138751635090e-05
+  # Gyr Y: noise=1.0930267231118781e-03, bias=1.3626296458942887e-05  
+  # Gyr Z: noise=6.7783005095391462e-04, bias=3.4514701679697841e-05
+  # Acc X: noise=1.8061210524358190e-02, bias=1.0929656491041710e-03
+  # Acc Y: noise=1.9066848470468679e-02, bias=8.8089713977957534e-04
+  # Acc Z: noise=1.6376845789179435e-02, bias=5.5967306849059525e-04
+  
+  imuGravity: 9.80511
+  imuRPYWeight: 0.001
+
+
+  # Extrinsics (lidar -> IMU) - Adjust if needed for your setup
+  extrinsicTrans:  [0.0, 0.0, 0.0] 
+  extrinsicRot: [1, 0, 0,
+                  0, 1, 0,
+                  0, 0, 1]
+  extrinsicRPY: [1, 0, 0,
+                  0, 1, 0,
+                  0, 0, 1]
+
+  # LOAM feature threshold - Optimized for dense mapping
+  edgeThreshold: 0.02 #0.05                          # Reduced from 1.0 for more edge features
+  surfThreshold: 0.02 #0.05                          # Reduced from 0.1 for more surface features
+  edgeFeatureMinValidNum: 3 #5                    # Reduced from 10 for more features
+  surfFeatureMinValidNum: 70 #50                   # Reduced from 100 for more featureshe input dataset. Integer indices would overflow.[pcl::VoxelGrid::applyFilter] Leaf size is too small for the input dataset. Integer indices 
+
+  # voxel filter params - Optimized for dense mapping
+
+  # voxel filter params - Optimized for maximum feature detection
+  odometrySurfLeafSize: 0.05                   # Reduced from 0.2 for much denser odometry features
+  mappingCornerLeafSize: 0.02                  # Reduced from 0.1 for much denser corner features
+  mappingSurfLeafSize: 0.05                  # Reduced from 0.4 for much denser mapping        CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+
+  # robot motion constraint
+  z_tollerance: 1000                            # meters
+  rotation_tollerance: 1000                     # radians
+
+  # CPU Params
+  numberOfCores: 8                              # Increased for better performance
+  mappingProcessInterval: 0.15 #0.1                    # Reduced from 0.15 for faster mapping and denser results CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+
+  # Surrounding map - Optimized for dense mapping
+  surroundingkeyframeAddingDistThreshold: 1.0 #0.5   # Reduced from 1.0 for denser keyframes CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+  surroundingkeyframeAddingAngleThreshold: 0.2 #0.1  # Reduced from 0.2 for denser keyframes CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+  surroundingKeyframeDensity: 0.5               # Reduced from 2.0 for much denser keyframes CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+  surroundingKeyframeSearchRadius: 100.0        # Increased from 50.0 for better coverage CHANGEDDDDDDDDDDDDDDDDDDDDDDDDDDDdd
+
+  # Loop closure
+  loopClosureEnableFlag: true
+  loopClosureFrequency: 0.5                    # Hz, regulate loop closure constraint add frequency
+  surroundingKeyframeSize: 50                   # submap size (when loop closure enabled)
+  historyKeyframeSearchRadius: 15.0             # meters, key frame that is within n meters from current pose will be considerd for loop closure
+  historyKeyframeSearchTimeDiff: 30.0           # seconds, key frame that is n seconds older will be considered for loop closure
+  historyKeyframeSearchNum: 25                  # number of hostory key frames will be fused into a submap for loop closure
+  historyKeyframeFitnessScore: 0.3              # icp threshold, the smaller the better alignment
+
+  # Visualization - For real-time display only (saving is raw)
+  globalMapVisualizationSearchRadius: 1000.0    # meters, global map visualization radius
+  globalMapVisualizationPoseDensity: 2.0        # Reduced from 10.0 for much denser visualization
+  globalMapVisualizationLeafSize: 0.2           # Reduced from 1.0 for much denser visualization
+
+# Navsat (convert GPS coordinates to Cartesian) - Not used
+navsat:
+  frequency: 50
+  wait_for_datum: false
+  delay: 0.0
+  magnetic_declination_radians: 0
+  yaw_offset: 0
+  zero_altitude: true
+  broadcast_utm_transform: false
+  broadcast_utm_transform_as_parent_frame: false
+  publish_filtered_gps: false
+
+# EKF for Navsat - Not used
+ekf_gps:
+  publish_tf: false
+  map_frame: map
+  odom_frame: odom
+  base_link_frame: base_link
+  world_frame: odom
+
+  frequency: 50
+  two_d_mode: false
+  sensor_timeout: 0.01
+  # -------------------------------------
+  # External IMU:
+  # -------------------------------------
+  imu0: imu_correct
+  imu0_config: [false, false, false,
+                true,  true,  true,
+                false, false, false,
+                false, false, true,
+                true,  true,  true]
+  imu0_differential: false
+  imu0_queue_size: 50 
+  imu0_remove_gravitational_acceleration: true
+  # -------------------------------------
+  # Odometry (From Navsat):
+  # -------------------------------------
+  odom0: odometry/gps
+  odom0_config: [true,  true,  true,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false]
+  odom0_differential: false
+  odom0_queue_size: 10
+
+  #                            x     y     z     r     p     y   x_dot  y_dot  z_dot  r_dot p_dot y_dot x_ddot y_ddot z_ddot
+  process_noise_covariance: [  1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    10.0, 0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0.03, 0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0.03, 0,    0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0.1,  0,     0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0.25,  0,     0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0.25,  0,     0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0.04,  0,    0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0.01, 0,    0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0.01, 0,    0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0.5,  0,    0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0.01, 0,      0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0.01,   0,
+                               0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0.015] 
