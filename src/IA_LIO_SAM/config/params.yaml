@@ -2,7 +2,7 @@ lio_sam:
 
   # Topics - Modified for your bag file
   pointCloudTopic: "/ouster/points"               # Point cloud data from your bag
-  imuTopic: "/ouster/imu_lpf"                     # IMU after low-pass filter
+  imuTopic: "/ouster/imu"                     # IMU after low-pass filter
   odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
   gpsTopic: "odometry/gpsz"                   # GPS odometry topic (not used in your case)
 
